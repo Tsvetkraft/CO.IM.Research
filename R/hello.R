@@ -124,51 +124,65 @@ run <- function() {
     # "коммуникация налажена хорошо"
     IMC =~ IMC.Com  + IMC.Msg + IMC.PersM + IMC.Netw + IMC.InCom + IMC.TeamM
 
-    # ""
+    # "обучение помогает работе"
     IME.Goal =~ IME.Goal.1 + IME.Goal.2 + IME.Goal.3 + IME.Goal.4 + IME.Goal.5 + IME.Goal.6
-    # ""
+    # "обучение актуализируется со временем"
     IME.Act =~ IME.Act.1 + IME.Act.2 + IME.Act.3
 
-    # ""
+    # "обучение налажено хорошо"
     IME =~ IME.Goal + IME.Act
 
-    # ""
+    # "цифровые сервисы полезны"
     IMS.Uti =~ IMS.Uti.1 + IMS.Uti.2 + IMS.Uti.3 + IMS.Uti.4
-    # ""
+    # "цифровые сервисы просты и удобны"
     IMS.Simp =~ IMS.Simp.1 + IMS.Simp.2 + IMS.Simp.3
-    # ""
+    # "я реально инноватор"
     IMS.Inn =~ IMS.Inn.1 + IMS.Inn.2 + IMS.Inn.3
 
-    # ""
+    # "цифровые сервисы хороши"
     IMS =~ IMS.Uti + IMS.Simp + IMS.Inn
 
-    # ""
+    # "культура направлена на удовлетворение сотрудника"
     IMCu.Sat =~ IMCu.Sat.1 + IMCu.Sat.2 + IMCu.Sat.3 + IMCu.Sat.4 + IMCu.Sat.5
-    # ""
-    IMCu.Cul =~ IMCu.Cul.1 + IMCu.Cul.2 + IMCu.Cul.3 + IMCu.Cul.4 + IMCu.Cul.5 + IMCu.Cul.6 + IMCu.Cul.7 + IMCu.Cul.8 + IMCu.Cul.9 + IMCu.Cul.10 + IMCu.Cul.11
-    # ""
+
+    # "мы сплочены и семейны"
+    IMCu.Cul.AllTogether =~ IMCu.Cul.1 + IMCu.Cul.2 + IMCu.Cul.3 + IMCu.Cul.4 + IMCu.Cul.5
+    # "мы иерархичны и конкуретны"
+    #IMCu.Cul.HierarchyCompetition =~ IMCu.Cul.6 + IMCu.Cul.7 + IMCu.Cul.8 + IMCu.Cul.9 + IMCu.Cul.10 + IMCu.Cul.11
+    # "культура хм... какая?" TODO
+    IMCu.Cul =~ IMCu.Cul.AllTogether# + IMCu.Cul.HierarchyCompetition
+
+    # "корпмероприятия хороши"
     IMCu.Eve =~ IMCu.Eve.1 + IMCu.Eve.2 + IMCu.Eve.3 + IMCu.Eve.4 + IMCu.Eve.5
 
-    # ""
+    # "культура хороша"
     IMCu =~ IMCu.Sat + IMCu.Eve + IMCu.Cul
 
-    # ""
+    # "внутренний маркетинг хорош"
     IM =~ IMC + IME + IMS #+ IMCu
 
-    # ""
-    RW.Set =~ RW.Set.1 + RW.Set.2 + RW.Set.3 + RW.Set.4 + RW.Set.5
-    # ""
-    RW.Atm =~ RW.Atm.1 + RW.Atm.2 + RW.Atm.3 + RW.Atm.4
-    # ""
+    # "работаю 0 - 5 дней удаленно"
+    RW.Set.Qty =~ RW.Set.1
+    # "удаленка нравится и эффективна"
+    RW.Set =~ RW.Set.2 + RW.Set.3 + RW.Set.4 + RW.Set.5
+    # "удаленка неудобна и неэффективна"
+    RW.Atm.Bad =~ RW.Atm.1 + RW.Atm.2 + RW.Atm.3 + RW.Atm.4
+    # "удаленка хорошая и инструменты интересные"
+    RW.Atm.Good =~ RW.Atm.3 + RW.Atm.4
+    # "я чувствую себя изолированным и потерянным на удаленке"
     RW.Iso =~ RW.Iso.1 + RW.Iso.2 + RW.Iso.3 + RW.Iso.4 + RW.Iso.5 + RW.Iso.6
-    # ""
+    # "компания помогает мне обустроить удаленку"
     RW.Sup =~ RW.Sup.1 + RW.Sup.2 + RW.Sup.3
 
-    # ""
-    RW =~ RW.Set + RW.Atm + RW.Iso + RW.Sup
+    # "удаленка какая?" TODO
+    RW =~ RW.Set.Qty + RW.Set + RW.Atm.Bad + RW.Atm.Good + RW.Iso + RW.Sup
 
-    # ""
-    #FB =~ FB.1 + FB.3 + FB.4 + FB.5 + FB.6
+    # "работаю с ОС"
+    #FB.Has =~ FB.1
+    # "ОС мотивирует"
+    #FB.Motivates =~ FB.3 + FB.4 + FB.5 + FB.6
+    # "ОС ???" TODO
+    #FB =~ FB.Has + FB.Motivates
     # ""
     #SD =~ SD.1 + SD.2 + SD.3 + SD.4
     #
