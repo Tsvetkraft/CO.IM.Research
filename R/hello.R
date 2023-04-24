@@ -83,8 +83,7 @@ run <- function() {
   src <- clean.strings(src)
   data <- without.spare.columns(src)
   write.table(data, 'processed.csv', sep = ';')
-  print('Data:')
-  print(data)
+
   alpha <- ltm::cronbach.alpha(data)
 
   rw.data <- select(data,
@@ -93,32 +92,97 @@ run <- function() {
                     RW.Iso.1, RW.Iso.2, RW.Iso.3, RW.Iso.4, RW.Iso.5,
                     RW.Sup.1, RW.Sup.2, RW.Sup.3)
   rw.cor.data <- round(cor(rw.data, method = 'pearson'), 2)
-  print('Pearson correlation:')
-  print(rw.cor.data)
 
   rw.happiness.from.fact <- lm(RW.Set.2 ~ RW.Set.1, data=data)
-  print('Linear regression RW happiness from RW fact:')
-  print(rw.happiness.from.fact)
 
   model.full <- '
-    CO =~ CO.Sat.1 + CO.Sat.2 + CO.Sat.3 + CO.N.1 + CO.N.2 + CO.CO.1 + CO.CO.2 + CO.CO.3 + CO.CO.4 + CO.Sen.1 + CO.Sen.2 + CO.Sen.3
-    IMC =~ IMC.Com.1 + IMC.Com.2 + IMC.Com.3 + IMC.TeamM.1 + IMC.TeamM.2 + IMC.TeamM.3 + IMC.TeamM.4 + IMC.TeamM.5 + IMC.TeamM.6 + IMC.TeamM.7 + IMC.TeamM.8 + IMC.TeamM.9 + IMC.TeamM.10 + IMC.TeamM.11 + IMC.Msg.1 + IMC.Msg.2 + IMC.Msg.3 + IMC.Msg.4 + IMC.Msg.5 + IMC.PersM.1 + IMC.PersM.2 + IMC.PersM.3 + IMC.PersM.4 + IMC.PersM.5 + IMC.Netw.1 + IMC.Netw.2 + IMC.Netw.3 + IMC.Netw.4 + IMC.Netw.5 + IMC.InCom.1 + IMC.InCom.2 + IMC.InCom.3 + IMC.InCom.4
-    RW =~ RW.Set.1 + RW.Set.2 + RW.Set.3 + RW.Set.4 + RW.Set.5 + RW.Atm.1 + RW.Atm.2 + RW.Atm.3 + RW.Atm.4 + RW.Iso.1 + RW.Iso.2 + RW.Iso.3 + RW.Iso.4 + RW.Iso.5 + RW.Sup.1 + RW.Sup.2 + RW.Sup.3
+    # "мне нравится быть к/о"
+    CO.Sat =~ CO.Sat.1 + CO.Sat.2 + CO.Sat.3
+    # "к/о соотв. моим целям"
+    CO.N =~ CO.N.1 + CO.N.2
+    # "к/о соотв. целям компании (измеряем и фокусируемся)"
+    CO.CO =~ CO.CO.1 + CO.CO.2 + CO.CO.3 + CO.CO.4
+    # "мы отзывчивы"
+    CO.Sen =~ CO.Sen.1 + CO.Sen.2 + CO.Sen.3
 
-    CO ~ IMC + RW
-    IMC ~ RW
-  '
-  model.lite <- '
-    CO =~ CO.Sat.1 + CO.Sat.2 + CO.Sat.3
-    IMC =~ IMC.Com.1 + IMC.Com.2 + IMC.Com.3
-    RW =~ RW.Set.1 + RW.Set.2 + RW.Set.3 + RW.Set.4 + RW.Set.5
+    # "я и компания клиентоориентированы"
+    CO =~ CO.Sat + CO.N + CO.CO + CO.Sen
 
-    CO ~ IMC + RW
-    IMC ~ RW
+    # "коммуникация хороша"
+    IMC.Com =~ IMC.Com.1 + IMC.Com.2 + IMC.Com.3
+    # "командные встречи хороши" (кроме 1, там скорее негативная шкала)
+    IMC.TeamM =~ IMC.TeamM.1 + IMC.TeamM.2 + IMC.TeamM.3 + IMC.TeamM.4 + IMC.TeamM.5 + IMC.TeamM.6 + IMC.TeamM.8 + IMC.TeamM.11 + IMC.TeamM.7 # + IMC.TeamM.9 + IMC.TeamM.10
+    # "мессенджеры исп. широко"
+    IMC.Msg =~ IMC.Msg.1 + IMC.Msg.2 + IMC.Msg.3 + IMC.Msg.4 + IMC.Msg.5
+    # "личные встречи хороши"
+    IMC.PersM =~ IMC.PersM.1 + IMC.PersM.2 + IMC.PersM.3 + IMC.PersM.4 + IMC.PersM.5
+    # "сетевые связи налажены"
+    IMC.Netw =~ IMC.Netw.1 + IMC.Netw.2 + IMC.Netw.3 + IMC.Netw.4 + IMC.Netw.5
+    # "внутренняя неформальная коммуникация налажена хорошо"
+    IMC.InCom =~ IMC.InCom.1 + IMC.InCom.2 + IMC.InCom.3 + IMC.InCom.4
+
+    # "коммуникация налажена хорошо"
+    IMC =~ IMC.Com  + IMC.Msg + IMC.PersM + IMC.Netw + IMC.InCom + IMC.TeamM
+
+    # ""
+    IME.Goal =~ IME.Goal.1 + IME.Goal.2 + IME.Goal.3 + IME.Goal.4 + IME.Goal.5 + IME.Goal.6
+    # ""
+    IME.Act =~ IME.Act.1 + IME.Act.2 + IME.Act.3
+
+    # ""
+    IME =~ IME.Goal + IME.Act
+
+    # ""
+    IMS.Uti =~ IMS.Uti.1 + IMS.Uti.2 + IMS.Uti.3 + IMS.Uti.4
+    # ""
+    IMS.Simp =~ IMS.Simp.1 + IMS.Simp.2 + IMS.Simp.3
+    # ""
+    IMS.Inn =~ IMS.Inn.1 + IMS.Inn.2 + IMS.Inn.3
+
+    # ""
+    IMS =~ IMS.Uti + IMS.Simp + IMS.Inn
+
+    # ""
+    IMCu.Sat =~ IMCu.Sat.1 + IMCu.Sat.2 + IMCu.Sat.3 + IMCu.Sat.4 + IMCu.Sat.5
+    # ""
+    IMCu.Cul =~ IMCu.Cul.1 + IMCu.Cul.2 + IMCu.Cul.3 + IMCu.Cul.4 + IMCu.Cul.5 + IMCu.Cul.6 + IMCu.Cul.7 + IMCu.Cul.8 + IMCu.Cul.9 + IMCu.Cul.10 + IMCu.Cul.11
+    # ""
+    IMCu.Eve =~ IMCu.Eve.1 + IMCu.Eve.2 + IMCu.Eve.3 + IMCu.Eve.4 + IMCu.Eve.5
+
+    # ""
+    IMCu =~ IMCu.Sat + IMCu.Eve + IMCu.Cul
+
+    # ""
+    IM =~ IMC + IME + IMS #+ IMCu
+
+    # ""
+    RW.Set =~ RW.Set.1 + RW.Set.2 + RW.Set.3 + RW.Set.4 + RW.Set.5
+    # ""
+    RW.Atm =~ RW.Atm.1 + RW.Atm.2 + RW.Atm.3 + RW.Atm.4
+    # ""
+    RW.Iso =~ RW.Iso.1 + RW.Iso.2 + RW.Iso.3 + RW.Iso.4 + RW.Iso.5 + RW.Iso.6
+    # ""
+    RW.Sup =~ RW.Sup.1 + RW.Sup.2 + RW.Sup.3
+
+    # ""
+    RW =~ RW.Set + RW.Atm + RW.Iso + RW.Sup
+
+    # ""
+    #FB =~ FB.1 + FB.3 + FB.4 + FB.5 + FB.6
+    # ""
+    #SD =~ SD.1 + SD.2 + SD.3 + SD.4
+    #
+
+
+    # ""
+    CO ~ IM + RW
+    # ""
+    IM ~ RW
   '
-  fit <- lavaan::sem(model.full, data)
+
+  fit <- lavaan::sem(model.full, data, estimator = 'ML')
   print('sem')
-  lavaan::summary(fit, standardized = TRUE)
+  lavaan::summary(fit, fit.measures = TRUE, standardized = TRUE)
 }
 
 run()
