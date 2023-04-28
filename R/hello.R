@@ -5,6 +5,7 @@
 #install.packages('pander')
 #install.packages('broom')
 #install.packages('lavaan')
+#install.packages('checkmate')
 
 library(dplyr)
 
@@ -203,6 +204,9 @@ run <- function() {
   fit <- lavaan::cfa(model.full, data, estimator = 'DWLS')
   print('summary')
   lavaan::summary(fit, fit.measures = TRUE, standardized = TRUE)
+
+  semPlot::semPaths(fit, what = 'est', layout = 'tree2', intercepts = TRUE, residuals = TRUE, thresholds = TRUE)
 }
 
 run()
+
