@@ -87,11 +87,10 @@ run <- function() {
   alpha <- ltm::cronbach.alpha(data)
 
   rw.data <- select(data,
-                    RW.Set.1, RW.Set.2, RW.Set.3, RW.Set.4, RW.Set.5,
-                    RW.Atm.1, RW.Atm.2, RW.Atm.3, RW.Atm.4,
-                    RW.Iso.1, RW.Iso.2, RW.Iso.3, RW.Iso.4, RW.Iso.5,
-                    RW.Sup.1, RW.Sup.2, RW.Sup.3)
+                    RW.Set.1,
+                    RW.Iso.1, RW.Iso.2, RW.Iso.3, RW.Iso.4, RW.Iso.5)
   rw.cor.data <- round(cor(rw.data, method = 'pearson'), 2)
+  #print(rw.cor.data)
 
   rw.happiness.from.fact <- lm(RW.Set.2 ~ RW.Set.1, data=data)
 
@@ -110,8 +109,8 @@ run <- function() {
 
     # "коммуникация хороша"
     IMC.Com =~ IMC.Com.1 + IMC.Com.2 + IMC.Com.3
-    # "командные встречи хороши" (кроме 1, там скорее негативная шкала)
-    IMC.TeamM =~ IMC.TeamM.1 + IMC.TeamM.2 + IMC.TeamM.3 + IMC.TeamM.4 + IMC.TeamM.5 + IMC.TeamM.6 + IMC.TeamM.8 + IMC.TeamM.11 + IMC.TeamM.7 # + IMC.TeamM.9 + IMC.TeamM.10
+    # "командные встречи хороши"
+    IMC.TeamM =~ IMC.TeamM.2 + IMC.TeamM.3 + IMC.TeamM.4 + IMC.TeamM.5 + IMC.TeamM.6 + IMC.TeamM.8 + IMC.TeamM.10 + IMC.TeamM.7 # IMC.TeamM.1 + IMC.TeamM.9 + IMC.TeamM.11
     # "мессенджеры исп. широко"
     IMC.Msg =~ IMC.Msg.1 + IMC.Msg.2 + IMC.Msg.3 + IMC.Msg.4 + IMC.Msg.5
     # "личные встречи хороши"
@@ -149,7 +148,7 @@ run <- function() {
     IMCu.Cul.AllTogether =~ IMCu.Cul.1 + IMCu.Cul.2 + IMCu.Cul.3 + IMCu.Cul.4 + IMCu.Cul.5
     # "мы иерархичны и конкуретны"
     #IMCu.Cul.HierarchyCompetition =~ IMCu.Cul.6 + IMCu.Cul.7 + IMCu.Cul.8 + IMCu.Cul.9 + IMCu.Cul.10 + IMCu.Cul.11
-    # "культура хм... какая?" TODO
+    # "горизонтальная культура"
     IMCu.Cul =~ IMCu.Cul.AllTogether# + IMCu.Cul.HierarchyCompetition
 
     # "корпмероприятия хороши"
@@ -159,14 +158,14 @@ run <- function() {
     IMCu =~ IMCu.Sat + IMCu.Eve + IMCu.Cul
 
     # "внутренний маркетинг хорош"
-    IM =~ IMC + IME + IMS #+ IMCu
+    IM =~ IMC + IME + IMS + IMCu
 
     # "работаю 0 - 5 дней удаленно"
     RW.Set.Qty =~ RW.Set.1
     # "удаленка нравится и эффективна"
     RW.Set =~ RW.Set.2 + RW.Set.3 + RW.Set.4 + RW.Set.5
-    # "удаленка неудобна и неэффективна"
-    RW.Atm.Bad =~ RW.Atm.1 + RW.Atm.2 + RW.Atm.3 + RW.Atm.4
+    # "удаленка неудобна и неэффективна" (!)
+    #RW.Atm.Bad =~ RW.Atm.1 + RW.Atm.2 + RW.Atm.3 + RW.Atm.4
     # "удаленка хорошая и инструменты интересные"
     RW.Atm.Good =~ RW.Atm.3 + RW.Atm.4
     # "я чувствую себя изолированным и потерянным на удаленке"
@@ -174,28 +173,35 @@ run <- function() {
     # "компания помогает мне обустроить удаленку"
     RW.Sup =~ RW.Sup.1 + RW.Sup.2 + RW.Sup.3
 
-    # "удаленка какая?" TODO
-    RW =~ RW.Set.Qty + RW.Set + RW.Atm.Bad + RW.Atm.Good + RW.Iso + RW.Sup
+    # "удаленка эффективная?" TODO
+    RW =~ RW.Set.Qty + RW.Set + RW.Atm.Good + RW.Sup # + RW.Atm.Bad
 
     # "работаю с ОС"
-    #FB.Has =~ FB.1
+    FB.Has =~ FB.1
     # "ОС мотивирует"
-    #FB.Motivates =~ FB.3 + FB.4 + FB.5 + FB.6
-    # "ОС ???" TODO
-    #FB =~ FB.Has + FB.Motivates
-    # ""
+    FB.Motivates =~ FB.4 + FB.5 + FB.6
+    # "ОС полезная и влияет на КО"
+    FB =~ FB.Has + FB.Motivates
+
     #SD =~ SD.1 + SD.2 + SD.3 + SD.4
     #
 
 
     # ""
-    CO ~ IM + RW
+    CO ~ IM
+    CO ~ RW.Iso
+    CO ~ FB.Motivates
+    # CO ~ IM + RW
     # ""
     IM ~ RW
+    IM ~ RW.Iso
   '
 
-  fit <- lavaan::sem(model.full, data, estimator = 'ML')
-  print('sem')
+  #fit <- lavaan::sem(model.full, data, estimator = 'ML')
+  #print('standardizedSolution')
+  #lavaan::standardizedSolution(fit)
+  fit <- lavaan::cfa(model.full, data, estimator = 'DWLS')
+  print('summary')
   lavaan::summary(fit, fit.measures = TRUE, standardized = TRUE)
 }
 
