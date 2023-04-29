@@ -68,11 +68,10 @@ clean.strings <- function(table) {
 
   table$SD.4 <- unlist(purrr::map(table$SD.4, function (x) {
     if (x == 'Исследования') 1
-    else if (x == 'Владелец продукта / менеджер') 2
-    else if (x == 'Анализ данных (в т.ч. использование AI)') 3
-    else if (x == 'Разработка (в т.ч. тестирование и сопровождение)') 4
-    else if (x == 'Ученая степень') 5
-    else 0;
+    else if (x == 'Владелец продукта / менеджер') 1
+    else if (x == 'Анализ данных (в т.ч. использование AI)') 0
+    else if (x == 'Разработка (в т.ч. тестирование и сопровождение)') 0
+    else 1;
   }));
 
   table
@@ -184,18 +183,16 @@ run <- function() {
     # "ОС полезная и влияет на КО"
     FB =~ FB.Has + FB.Motivates
 
-    #SD =~ SD.1 + SD.2 + SD.3 + SD.4
-    #
 
-
-    # ""
     CO ~ IM
     CO ~ RW.Iso
     CO ~ FB.Motivates
+    CO ~ SD.4
     # CO ~ IM + RW
-    # ""
+
     IM ~ RW
     IM ~ RW.Iso
+    IM ~ SD.4
   '
 
   #fit <- lavaan::sem(model.full, data, estimator = 'ML')
@@ -205,7 +202,6 @@ run <- function() {
   print('summary')
   lavaan::summary(fit, fit.measures = TRUE, standardized = TRUE)
 
-  semPlot::semPaths(fit, what = 'est', layout = 'tree2', intercepts = TRUE, residuals = TRUE, thresholds = TRUE)
 }
 
 run()
