@@ -110,36 +110,36 @@ run <- function() {
     # "коммуникация хороша"
     IMC.Com =~ IMC.Com.1 + IMC.Com.2 + IMC.Com.3
     # "командные встречи хороши"
-    IMC.TeamM =~ IMC.TeamM.2 + IMC.TeamM.3 + IMC.TeamM.4 + IMC.TeamM.5 + IMC.TeamM.6 + IMC.TeamM.8 + IMC.TeamM.10 + IMC.TeamM.7 # IMC.TeamM.1 + IMC.TeamM.9 + IMC.TeamM.11
+  # IMC.TeamM =~ IMC.TeamM.2 + IMC.TeamM.3 + IMC.TeamM.4 + IMC.TeamM.6 + IMC.TeamM.8 + IMC.TeamM.7 # IMC.TeamM.1 + IMC.TeamM.5 + IMC.TeamM.9 + IMC.TeamM.10 + IMC.TeamM.11
     # "мессенджеры исп. широко"
-    IMC.Msg =~ IMC.Msg.1 + IMC.Msg.2 + IMC.Msg.3 + IMC.Msg.4 + IMC.Msg.5
+  # IMC.Msg =~ IMC.Msg.1 + IMC.Msg.2 + IMC.Msg.3 + IMC.Msg.4 + IMC.Msg.5
     # "личные встречи хороши"
-    IMC.PersM =~ IMC.PersM.1 + IMC.PersM.2 + IMC.PersM.3 + IMC.PersM.4 + IMC.PersM.5
+  # IMC.PersM =~ IMC.PersM.1 + IMC.PersM.2 + IMC.PersM.3 + IMC.PersM.4 + IMC.PersM.5
     # "сетевые связи налажены"
-    IMC.Netw =~ IMC.Netw.1 + IMC.Netw.2 + IMC.Netw.3 + IMC.Netw.4 + IMC.Netw.5
+  # IMC.Netw =~ IMC.Netw.1 + IMC.Netw.2 + IMC.Netw.3 + IMC.Netw.4 + IMC.Netw.5
     # "внутренняя неформальная коммуникация налажена хорошо"
     IMC.InCom =~ IMC.InCom.1 + IMC.InCom.2 + IMC.InCom.3 + IMC.InCom.4
 
     # "коммуникация налажена хорошо"
-    IMC =~ IMC.Com  + IMC.Msg + IMC.PersM + IMC.Netw + IMC.InCom + IMC.TeamM
+    IMC =~ IMC.Com + IMC.InCom # + IMC.TeamM + IMC.Msg + IMC.PersM + IMC.Netw
 
     # "обучение помогает работе"
-    IME.Goal =~ IME.Goal.1 + IME.Goal.2 + IME.Goal.3 + IME.Goal.4 + IME.Goal.5 + IME.Goal.6
+    IME.Goal =~ IME.Goal.1 + IME.Goal.2 + IME.Goal.3 + IME.Goal.4 + IME.Goal.6 #IME.Goal.5
     # "обучение актуализируется со временем"
-    IME.Act =~ IME.Act.1 + IME.Act.2 + IME.Act.3
+  # IME.Act =~ IME.Act.1 + IME.Act.2 + IME.Act.3
 
     # "обучение налажено хорошо"
-    IME =~ IME.Goal + IME.Act
+    IME =~ IME.Goal # + IME.Act
 
     # "цифровые сервисы полезны"
     IMS.Uti =~ IMS.Uti.1 + IMS.Uti.2 + IMS.Uti.3 + IMS.Uti.4
     # "цифровые сервисы просты и удобны"
     IMS.Simp =~ IMS.Simp.1 + IMS.Simp.2 + IMS.Simp.3
     # "я реально инноватор"
-    IMS.Inn =~ IMS.Inn.1 + IMS.Inn.2 + IMS.Inn.3
+  # IMS.Inn =~ IMS.Inn.1 + IMS.Inn.2 + IMS.Inn.3
 
     # "цифровые сервисы хороши"
-    IMS =~ IMS.Uti + IMS.Simp + IMS.Inn
+    IMS =~ IMS.Uti + IMS.Simp # + IMS.Inn
 
     # "культура направлена на удовлетворение сотрудника"
     IMCu.Sat =~ IMCu.Sat.1 + IMCu.Sat.2 + IMCu.Sat.3 + IMCu.Sat.4 + IMCu.Sat.5
@@ -184,23 +184,62 @@ run <- function() {
     FB =~ FB.Has + FB.Motivates
 
 
-    CO ~ IM
-    CO ~ RW.Iso
-    CO ~ FB.Motivates
-    CO ~ SD.4
+    CO ~~ IMCu
+    CO ~~ IMC
+    CO ~~ IME
+    CO ~~ IM
+
+    IM ~~ FB
+
+    IMC ~~ FB
+    IME ~~ FB
+    #IME ~~ IMS
+
+    CO ~~ IMC.InCom
+    CO ~~ IME.Goal
+    CO ~~ IMCu.Cul.AllTogether
+    CO ~~ IMCu.Cul
+    IMC ~~ IMS
+    IMC ~~ RW.Set
+    IMC ~~ RW.Iso
+    #IME ~~ IMS.Uti
+    #IME ~~ IMCu.Sat
+    #IME ~~ IMCu
+    #IME ~~ FB.Has
+
+
+
+
+  #  CO ~ IM
+  # CO ~ RW.Iso
+  #  CO ~ FB.Motivates
+  # CO ~ SD.4
     # CO ~ IM + RW
 
-    IM ~ RW
-    IM ~ RW.Iso
-    IM ~ SD.4
+  #  IM ~ RW
+  #  IM ~ RW.Iso
+  # IM ~ SD.4
+
+
+
   '
 
   #fit <- lavaan::sem(model.full, data, estimator = 'ML')
   #print('standardizedSolution')
   #lavaan::standardizedSolution(fit)
-  fit <- lavaan::cfa(model.full, data, estimator = 'DWLS')
-  print('summary')
+  fit <- lavaan::sem(model.full, data, estimator = 'DWLS')
+  #lavaan::modindices(fit,power=TRUE,delta=0.1,alpha=0.05,high.power=0.75)
+  #lavaan:: modificationIndices(fit, minimum.value = 10)
+  #print('summary')
   lavaan::summary(fit, fit.measures = TRUE, standardized = TRUE)
+
+  #fit <- lavaan::sem(model.full, data,
+  #              auto.var=TRUE, auto.fix.first=TRUE,
+  #              auto.cov.lv.x=TRUE)
+
+
+  # View Residuals (documentation in the lavaan-class help file)
+  #lavaan::resid(fit, type='normalized')
 
 }
 
