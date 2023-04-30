@@ -85,6 +85,7 @@ run <- function() {
   write.table(data, 'processed.csv', sep = ';')
 
   alpha <- ltm::cronbach.alpha(data)
+  summary(alpha)
 
   rw.data <- select(data,
                     RW.Set.1,
@@ -94,7 +95,7 @@ run <- function() {
 
   rw.happiness.from.fact <- lm(RW.Set.2 ~ RW.Set.1, data=data)
 
-  model.full <- '
+  model.calc <- '
     # "мне нравится быть к/о"
     CO.Sat =~ CO.Sat.1 + CO.Sat.2 + CO.Sat.3
     # "к/о соотв. моим целям"
@@ -110,36 +111,36 @@ run <- function() {
     # "коммуникация хороша"
     IMC.Com =~ IMC.Com.1 + IMC.Com.2 + IMC.Com.3
     # "командные встречи хороши"
-  # IMC.TeamM =~ IMC.TeamM.2 + IMC.TeamM.3 + IMC.TeamM.4 + IMC.TeamM.6 + IMC.TeamM.8 + IMC.TeamM.7 # IMC.TeamM.1 + IMC.TeamM.5 + IMC.TeamM.9 + IMC.TeamM.10 + IMC.TeamM.11
+    IMC.TeamM =~ IMC.TeamM.2 + IMC.TeamM.3 + IMC.TeamM.4 + IMC.TeamM.5 + IMC.TeamM.6 + IMC.TeamM.8 + IMC.TeamM.10 + IMC.TeamM.7 # IMC.TeamM.1 + IMC.TeamM.9 + IMC.TeamM.11
     # "мессенджеры исп. широко"
-  # IMC.Msg =~ IMC.Msg.1 + IMC.Msg.2 + IMC.Msg.3 + IMC.Msg.4 + IMC.Msg.5
+    IMC.Msg =~ IMC.Msg.1 + IMC.Msg.2 + IMC.Msg.3 + IMC.Msg.4 + IMC.Msg.5
     # "личные встречи хороши"
-  # IMC.PersM =~ IMC.PersM.1 + IMC.PersM.2 + IMC.PersM.3 + IMC.PersM.4 + IMC.PersM.5
+    IMC.PersM =~ IMC.PersM.1 + IMC.PersM.2 + IMC.PersM.3 + IMC.PersM.4 + IMC.PersM.5
     # "сетевые связи налажены"
-  # IMC.Netw =~ IMC.Netw.1 + IMC.Netw.2 + IMC.Netw.3 + IMC.Netw.4 + IMC.Netw.5
+    IMC.Netw =~ IMC.Netw.1 + IMC.Netw.2 + IMC.Netw.3 + IMC.Netw.4 + IMC.Netw.5
     # "внутренняя неформальная коммуникация налажена хорошо"
     IMC.InCom =~ IMC.InCom.1 + IMC.InCom.2 + IMC.InCom.3 + IMC.InCom.4
 
     # "коммуникация налажена хорошо"
-    IMC =~ IMC.Com + IMC.InCom # + IMC.TeamM + IMC.Msg + IMC.PersM + IMC.Netw
+    IMC =~ IMC.Com  + IMC.Msg + IMC.PersM + IMC.Netw + IMC.InCom + IMC.TeamM
 
     # "обучение помогает работе"
-    IME.Goal =~ IME.Goal.1 + IME.Goal.2 + IME.Goal.3 + IME.Goal.4 + IME.Goal.6 #IME.Goal.5
+    IME.Goal =~ IME.Goal.1 + IME.Goal.2 + IME.Goal.3 + IME.Goal.4 + IME.Goal.5 + IME.Goal.6
     # "обучение актуализируется со временем"
-  # IME.Act =~ IME.Act.1 + IME.Act.2 + IME.Act.3
+    IME.Act =~ IME.Act.1 + IME.Act.2 + IME.Act.3
 
     # "обучение налажено хорошо"
-    IME =~ IME.Goal # + IME.Act
+    IME =~ IME.Goal + IME.Act
 
     # "цифровые сервисы полезны"
     IMS.Uti =~ IMS.Uti.1 + IMS.Uti.2 + IMS.Uti.3 + IMS.Uti.4
     # "цифровые сервисы просты и удобны"
     IMS.Simp =~ IMS.Simp.1 + IMS.Simp.2 + IMS.Simp.3
     # "я реально инноватор"
-  # IMS.Inn =~ IMS.Inn.1 + IMS.Inn.2 + IMS.Inn.3
+    IMS.Inn =~ IMS.Inn.1 + IMS.Inn.2 + IMS.Inn.3
 
     # "цифровые сервисы хороши"
-    IMS =~ IMS.Uti + IMS.Simp # + IMS.Inn
+    IMS =~ IMS.Uti + IMS.Simp + IMS.Inn
 
     # "культура направлена на удовлетворение сотрудника"
     IMCu.Sat =~ IMCu.Sat.1 + IMCu.Sat.2 + IMCu.Sat.3 + IMCu.Sat.4 + IMCu.Sat.5
@@ -183,64 +184,95 @@ run <- function() {
     # "ОС полезная и влияет на КО"
     FB =~ FB.Has + FB.Motivates
 
+    CO ~ IM
+    CO ~ RW.Iso
+    CO ~ FB.Motivates
+    CO ~ SD.4
 
-    CO ~~ IMCu
-    CO ~~ IMC
-    CO ~~ IME
-    CO ~~ IM
+    IM ~ RW
+    IM ~ RW.Iso
+    IM ~ SD.4
+  '
+  model.covariances <- '
 
-    IM ~~ FB
-
-    IMC ~~ FB
-    IME ~~ FB
-    #IME ~~ IMS
-
-    CO ~~ IMC.InCom
-    CO ~~ IME.Goal
-    CO ~~ IMCu.Cul.AllTogether
-    CO ~~ IMCu.Cul
-    IMC ~~ IMS
-    IMC ~~ RW.Set
-    IMC ~~ RW.Iso
-    #IME ~~ IMS.Uti
-    #IME ~~ IMCu.Sat
-    #IME ~~ IMCu
-    #IME ~~ FB.Has
-
-
-
-
-  #  CO ~ IM
-  # CO ~ RW.Iso
-  #  CO ~ FB.Motivates
-  # CO ~ SD.4
-    # CO ~ IM + RW
-
-  #  IM ~ RW
-  #  IM ~ RW.Iso
-  # IM ~ SD.4
-
-
-
+    IMC.TeamM ~~  RW.Iso
+    IMC.TeamM ~~  RW
+    IMCu ~~       RW
+    IM ~~         RW.Sup
+    RW.Sup ~~     RW
+    IMCu ~~       RW.Iso
+    RW.Iso ~~     RW.Sup
+    RW.Set.Qty ~~ RW
+    IMC.InCom ~~  IMCu.Eve
+    IMCu ~~       FB
+    IMC ~~        RW
+    IMC ~~        RW.Iso
+    IMC.InCom ~~  FB
+    IMCu.Eve ~~   FB
+    IMCu ~~       RW.Set
+    IMCu ~~       FB.Motivates
+    IMC.InCom ~~  RW
+    RW.Set.Qty ~~ RW.Iso
+    RW.Set ~~     RW
+    IM ~~         RW.Set.Qty
+    RW.Set.Qty ~~ FB
+    IMC.InCom ~~  FB.Motivates
+    IMC.InCom ~~  IMCu
+    IMS.Simp ~~   FB
+    IMCu.Eve ~~   FB.Motivates
+    IMC.TeamM ~~  FB
+    CO.Sat ~~     FB
+    IMCu.Eve ~~   RW
+    RW.Set.Qty ~~ FB.Motivates
+    IMCu.Cul.AllTogether ~~                   RW
+    IMCu.Cul ~~   RW
+    IMS ~~        FB
+    IME.Act ~~    IMCu.Eve
+    IMS.Simp ~~   FB.Motivates
+    RW.Set.Qty ~~ RW.Set
+    IM ~~         RW.Set
+    RW.Set ~~     RW.Iso
+    IMC.InCom ~~  IMC
+    IMCu.Eve ~~   RW.Iso
+    CO.N ~~       FB
+    IMC.InCom ~~  RW.Iso
+    IME ~~        IMCu
+    IME.Act ~~    IMCu
+    IMC.TeamM ~~  FB.Motivates
+    CO.Sat ~~     RW.Iso
+    CO.Sat ~~     FB.Motivates
+    IMCu.Cul.AllTogether ~~               RW.Iso
+    IMCu.Cul ~~   RW.Iso
+    IME.Goal ~~   RW.Iso
+    IMCu ~~       RW.Set.Qty
+    IMC.Msg.3 ~~  IMC.Msg.4
+    IMC.Msg ~~    RW.Set
+    RW.Set ~~     FB
+    CO.CO ~~      IMC
+    IMC.InCom ~~  RW.Sup
+    IMCu.Cul.AllTogether ~~               RW.Set
+    IMCu.Cul ~~   RW.Set
+    IMC.PersM ~~  RW.Set.Qty
+    IME ~~        RW.Sup
+    IMCu.Sat ~~   RW
+    IMC.InCom ~~  IME.Act
+    IME ~~        IMCu.Eve
+    IM ~~         RW
+    IM ~~         FB
+    IM ~~         RW.Iso
+    RW.Set.1 ~~   RW.Set.3
+    IMCu.Eve ~~   IMCu
+    IMCu.Sat ~~   IMCu.Cul.AllTogether
+    IMCu.Sat ~~   IMCu.Cul
+    IMCu.Sat ~~   FB
   '
 
-  #fit <- lavaan::sem(model.full, data, estimator = 'ML')
-  #print('standardizedSolution')
-  #lavaan::standardizedSolution(fit)
+  model.full <- c(model.calc, model.covariances)
+
   fit <- lavaan::sem(model.full, data, estimator = 'DWLS')
-  #lavaan::modindices(fit,power=TRUE,delta=0.1,alpha=0.05,high.power=0.75)
-  #lavaan:: modificationIndices(fit, minimum.value = 10)
-  #print('summary')
+  print('calculated')
   lavaan::summary(fit, fit.measures = TRUE, standardized = TRUE)
-
-  #fit <- lavaan::sem(model.full, data,
-  #              auto.var=TRUE, auto.fix.first=TRUE,
-  #              auto.cov.lv.x=TRUE)
-
-
-  # View Residuals (documentation in the lavaan-class help file)
-  #lavaan::resid(fit, type='normalized')
-
+  semPlot::semPaths(fit, what = 'path', layout = 'tree2', intercepts = FALSE, residuals = FALSE, thresholds = FALSE, curve = 2, nCharNodes = 4, nCharEdges = 4, sizeLat = 10, combineGroups = TRUE)
 }
 
 run()
