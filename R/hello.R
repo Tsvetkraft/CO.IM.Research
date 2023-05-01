@@ -182,12 +182,20 @@ run <- function() {
     # "ОС мотивирует"
     FB.Motivates =~ FB.4 + FB.5 + FB.6
     # "ОС полезная и влияет на КО"
-    FB =~ FB.Has + FB.Motivates
+    #FB =~ FB.Has + FB.Motivates
 
     CO ~ IM
+    CO ~ IMC
+    CO ~ IME
+    CO ~ IMS
+    CO ~ IMCu
+
+    CO ~ RW.Set.Qty
     CO ~ RW.Iso
-    CO ~ FB.Motivates
+    CO ~ FB.Has
     CO ~ SD.4
+
+    FB.Motivates ~ FB.Has
 
     IM ~ RW
     IM ~ RW.Iso
@@ -268,9 +276,9 @@ run <- function() {
   fit <- lavaan::sem(model.full, data, estimator = 'DWLS')
   print('calculated')
   lavaan::summary(fit, fit.measures = TRUE, standardized = TRUE)
-  semPlot::semPaths(fit, what = 'est', layout = 'tree2', intercepts = TRUE, residuals = TRUE, thresholds = TRUE)
+#  semPlot::semPaths(fit, what = 'est', layout = 'tree2', intercepts = TRUE, residuals = TRUE, thresholds = TRUE)
   fit
 }
 
-res <- run()
+fit <- run()
 
