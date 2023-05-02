@@ -182,7 +182,11 @@ run <- function() {
     # "ОС мотивирует"
     FB.Motivates =~ FB.4 + FB.5 + FB.6
     # "ОС полезная и влияет на КО"
-    # FB =~ FB.Has + FB.Motivates
+    FB =~ FB.Has + FB.Motivates
+
+    IM ~ RW
+    IM ~ RW.Iso
+    IM ~ SD.4
 
     CO ~ IMC + IME + IMS + IMCu
     CO ~ SD.4
@@ -193,86 +197,82 @@ run <- function() {
 
     FB.Motivates ~ FB.Has
 
-    IM ~ RW
-    IM ~ RW.Iso
-    IM ~ SD.4
-
-  #  IMC.TeamM ~~  RW.Iso
-  #  IMC.TeamM ~~  RW
-  #  IMCu ~~       RW
-  #  IM ~~         RW.Sup
-  #  RW.Sup ~~     RW
-  #  IMCu ~~       RW.Iso
-  #  RW.Iso ~~     RW.Sup
-  #  RW.Set.Qty ~~ RW
-  #  IMC.InCom ~~  IMCu.Eve
-  #  IMCu ~~       FB
-  #  IMC ~~        RW
-  #  IMC ~~        RW.Iso
-  #  IMC.InCom ~~  FB
-  #  IMCu.Eve ~~   FB
-  #  IMCu ~~       RW.Set
-  #  IMCu ~~       FB.Motivates
-  #  IMC.InCom ~~  RW
-  #  RW.Set.Qty ~~ RW.Iso
-  #  RW.Set ~~     RW
-  #  IM ~~         RW.Set.Qty
-  #  RW.Set.Qty ~~ FB
-  #  IMC.InCom ~~  FB.Motivates
-  #  IMC.InCom ~~  IMCu
-  #  IMS.Simp ~~   FB
-  #  IMCu.Eve ~~   FB.Motivates
-  #  IMC.TeamM ~~  FB
-  #  CO.Sat ~~     FB
-  #  IMCu.Eve ~~   RW
-  #  RW.Set.Qty ~~ FB.Motivates
-  #  IMCu.Cul.AllTogether ~~ RW
-  #  IMCu.Cul ~~   RW
-  #  IMS ~~        FB
-  #  IME.Act ~~    IMCu.Eve
-  #  IMS.Simp ~~   FB.Motivates
-  #  RW.Set.Qty ~~ RW.Set
-  #  IM ~~         RW.Set
-  #  RW.Set ~~     RW.Iso
-  #  IMC.InCom ~~  IMC
-  #  IMCu.Eve ~~   RW.Iso
-  #  CO.N ~~       FB
-  #  IMC.InCom ~~  RW.Iso
-  #  IME ~~        IMCu
-  #  IME.Act ~~    IMCu
-  #  IMC.TeamM ~~  FB.Motivates
-  #  CO.Sat ~~     RW.Iso
-  #  CO.Sat ~~     FB.Motivates
-  #  IMCu.Cul.AllTogether ~~ RW.Iso
-  #  IMCu.Cul ~~   RW.Iso
-  #  IME.Goal ~~   RW.Iso
-  #  IMCu ~~       RW.Set.Qty
-  #  IMC.Msg.3 ~~  IMC.Msg.4
-  #  IMC.Msg ~~    RW.Set
-  #  RW.Set ~~     FB
-  #  CO.CO ~~      IMC
-  #  IMC.InCom ~~  RW.Sup
-  #  IMCu.Cul.AllTogether ~~ RW.Set
-  #  IMCu.Cul ~~   RW.Set
-  #  IMC.PersM ~~  RW.Set.Qty
-  #  IME ~~        RW.Sup
-  #  IMCu.Sat ~~   RW
-  #  IMC.InCom ~~  IME.Act
-  #  IME ~~        IMCu.Eve
-  #  IM ~~         RW
-  #  IM ~~         FB
-  #  IM ~~         RW.Iso
-  #  RW.Set.1 ~~   RW.Set.3
-  #  IMCu.Eve ~~   IMCu
-  #  IMCu.Sat ~~   IMCu.Cul.AllTogether
-  #  IMCu.Sat ~~   IMCu.Cul
-  #  IMCu.Sat ~~   FB
+    IMC.TeamM ~~  RW.Iso
+    IMC.TeamM ~~  RW
+    IMCu ~~       RW
+    IM ~~         RW.Sup
+    RW.Sup ~~     RW
+    IMCu ~~       RW.Iso
+    RW.Iso ~~     RW.Sup
+    RW.Set.Qty ~~ RW
+    IMC.InCom ~~  IMCu.Eve
+    IMCu ~~       FB
+    IMC ~~        RW
+    IMC ~~        RW.Iso
+    IMC.InCom ~~  FB
+    IMCu.Eve ~~   FB
+    IMCu ~~       RW.Set
+    IMCu ~~       FB.Motivates
+    IMC.InCom ~~  RW
+    RW.Set.Qty ~~ RW.Iso
+    RW.Set ~~     RW
+    IM ~~         RW.Set.Qty
+    RW.Set.Qty ~~ FB
+    IMC.InCom ~~  FB.Motivates
+    IMC.InCom ~~  IMCu
+    IMS.Simp ~~   FB
+    IMCu.Eve ~~   FB.Motivates
+    IMC.TeamM ~~  FB
+    CO.Sat ~~     FB
+    IMCu.Eve ~~   RW
+    RW.Set.Qty ~~ FB.Motivates
+    IMCu.Cul.AllTogether ~~ RW
+    IMCu.Cul ~~   RW
+    IMS ~~        FB
+    IME.Act ~~    IMCu.Eve
+    IMS.Simp ~~   FB.Motivates
+    RW.Set.Qty ~~ RW.Set
+    IM ~~         RW.Set
+    RW.Set ~~     RW.Iso
+    IMC.InCom ~~  IMC
+    IMCu.Eve ~~   RW.Iso
+    CO.N ~~       FB
+    IMC.InCom ~~  RW.Iso
+    IME ~~        IMCu
+    IME.Act ~~    IMCu
+    IMC.TeamM ~~  FB.Motivates
+    CO.Sat ~~     RW.Iso
+    CO.Sat ~~     FB.Motivates
+    IMCu.Cul.AllTogether ~~ RW.Iso
+    IMCu.Cul ~~   RW.Iso
+    IME.Goal ~~   RW.Iso
+    IMCu ~~       RW.Set.Qty
+    IMC.Msg.3 ~~  IMC.Msg.4
+    IMC.Msg ~~    RW.Set
+    RW.Set ~~     FB
+    CO.CO ~~      IMC
+    IMC.InCom ~~  RW.Sup
+    IMCu.Cul.AllTogether ~~ RW.Set
+    IMCu.Cul ~~   RW.Set
+    IMC.PersM ~~  RW.Set.Qty
+    IME ~~        RW.Sup
+    IMCu.Sat ~~   RW
+    IMC.InCom ~~  IME.Act
+    IME ~~        IMCu.Eve
+    IM ~~         RW
+    IM ~~         FB
+    IM ~~         RW.Iso
+    RW.Set.1 ~~   RW.Set.3
+    IMCu.Eve ~~   IMCu
+    IMCu.Sat ~~   IMCu.Cul.AllTogether
+    IMCu.Sat ~~   IMCu.Cul
+    IMCu.Sat ~~   FB
   '
 
   fit <- lavaan::sem(model.full, data, estimator = 'DWLS')
   print('calculated')
   lavaan::summary(fit, fit.measures = TRUE, standardized = TRUE)
-#  semPlot::semPaths(fit, what = 'est', layout = 'tree2', intercepts = TRUE, residuals = TRUE, thresholds = TRUE)
+  #semPlot::semPaths(fit, what = 'est', layout = 'tree2', intercepts = TRUE, residuals = TRUE, thresholds = TRUE)
   fit
 }
 
