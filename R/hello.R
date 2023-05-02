@@ -182,18 +182,14 @@ run <- function() {
     # "ОС мотивирует"
     FB.Motivates =~ FB.4 + FB.5 + FB.6
     # "ОС полезная и влияет на КО"
-    #FB =~ FB.Has + FB.Motivates
+    # FB =~ FB.Has + FB.Motivates
 
-    CO ~ IM
-    CO ~ IMC
-    CO ~ IME
-    CO ~ IMS
-    CO ~ IMCu
+    CO ~ IMC + IME + IMS + IMCu
+    CO ~ SD.4
 
     CO ~ RW.Set.Qty
     CO ~ RW.Iso
     CO ~ FB.Has
-    CO ~ SD.4
 
     FB.Motivates ~ FB.Has
 
